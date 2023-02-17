@@ -1,0 +1,5 @@
+FLASK_DEBUG=True
+DBNAME=postgres
+DBHOST=localhost
+DBUSER=postgres
+DBPASS=Fait...
