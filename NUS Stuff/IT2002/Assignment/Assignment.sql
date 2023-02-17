@@ -48,7 +48,7 @@ ORDER BY c.first_name;
 -- Q9 Find the social security number of the different customers who 
 -- purchased something on Christmas day 2017 with their Visa credit
 -- card (the credit card type is "Visa")
-SELECT *
+SELECT c.ssn, t.datetime, cc.type
 FROM customers c, credit_cards cc, transactions t
 WHERE cc.ssn = c.ssn
 AND t.number = cc.number
@@ -116,24 +116,24 @@ AND t.code = m2.code
 -- card type is "jcb"). Propose five (5) different SQL queries
 
 -- Method 1
-SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+SELECT DISTINCT c.first_name, c.last_name
 FROM customers c, credit_cards cc, merchants m, transactions t
 WHERE t.number = cc.number
 AND t.code = m.code
 AND cc.ssn = c.ssn
 AND c.country = 'Thailand'
 AND cc.type != 'jcb'
-ORDER BY c.first_name, cc.type
+ORDER BY c.first_name
 
 -- Method 2
-SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+SELECT DISTINCT c.first_name, c.last_name
 FROM customers c, credit_cards cc, merchants m, transactions t
 WHERE t.number = cc.number
 AND t.code = m.code
 AND cc.ssn = c.ssn
 AND c.country = 'Thailand'
 INTERSECT
-SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+SELECT DISTINCT c.first_name, c.last_name
 FROM customers c, credit_cards cc, merchants m, transactions t
 WHERE t.number = cc.number
 AND t.code = m.code
@@ -141,19 +141,28 @@ AND cc.ssn = c.ssn
 AND cc.type != 'jcb'
 
 -- Method 3
-SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
-FROM customers c, credit_cards cc, merchants m, transactions t
-WHERE t.number = cc.number
-AND t.code = m.code
-AND cc.ssn = c.ssn
-EXCEPT
-(SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
-FROM customers c, credit_cards cc, merchants m, transactions t
-WHERE t.number = cc.number
-AND t.code = m.code
-AND cc.ssn = c.ssn
-AND (c.country != 'Thailand'
-OR cc.type = 'jcb'))
+SELECT DISTINCT c.first_name, c.last_name
+FROM customers c
+WHERE c.ssn IN (
+    SELECT cc.ssn
+    FROM credit_cards cc
+    WHERE c.ssn = cc.ssn
+    AND c.country = 'Thailand'
+    AND cc.type != 'jcb'
+)
+-- SELECT c.first_name, c.last_name
+-- FROM customers c, credit_cards cc, merchants m, transactions t
+-- WHERE t.number = cc.number
+-- AND t.code = m.code
+-- AND cc.ssn = c.ssn
+-- EXCEPT
+-- (SELECT c.first_name, c.last_name
+-- FROM customers c, credit_cards cc, merchants m, transactions t
+-- WHERE t.number = cc.number
+-- AND t.code = m.code
+-- AND cc.ssn = c.ssn
+-- AND (c.country != 'Thailand'
+-- OR cc.type = 'jcb'))
 
 -- Method 4
 SELECT DISTINCT c.first_name, c.last_name
@@ -168,7 +177,7 @@ WHERE EXISTS (
 ORDER BY c.first_name
 
 -- Method 5
-SELECT DISTINCT c.first_name, c.last_name, c.country
+SELECT DISTINCT c.first_name, c.last_name
 FROM customers c
 WHERE c.ssn = ANY (
     SELECT cc.ssn
