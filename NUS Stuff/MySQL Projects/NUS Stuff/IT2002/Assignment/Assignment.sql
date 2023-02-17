@@ -1,9 +1,12 @@
--- SELECT *
--- FROM customers c, credit_cards cre, merchants m, transactions t
--- WHERE cre.ssn = c.ssn
--- AND t.number = cre.number
--- AND t.code = m.code
--- LIMIT(100);
+SELECT c.ssn Customer_ssn, c.first_name, c.last_name, c.country,
+cc.number credit_card_no, cc.type credit_card_type,
+m.code merchant_code, m.name merchant_name, m.country merchant_country,
+t.identifier transaction_ID, t.datetime transaction_datetime, t.amount transaction_amount
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+LIMIT(1000);
 
 -- Q3 Give the SQL code for an insertion to the 
 -- table merchants that violates a not null constraint
@@ -11,7 +14,8 @@ INSERT INTO merchants (code, name, country) VALUES ('98-1479529', 'Walt, Olson a
 -- ERROR: null value in column "country" of relation "merchants" violates not-null constraint
 
 -- Q4 Give the SQL code for an update to the 
--- table transactions that violates a constraint on the table merchants
+-- table transactions that violates a constraint 
+-- on the table merchants.
 UPDATE merchants SET name = NULL;
 -- ERROR: null value in column "name" of relation "merchants" violates not-null constraint
 
@@ -42,7 +46,7 @@ GROUP BY c.first_name, c.last_name
 ORDER BY c.first_name;
 
 -- Q9 Find the social security number of the different customers who 
--- purchased something on Christmas day 2017 with their Visa 
+-- purchased something on Christmas day 2017 with their Visa credit
 -- card (the credit card type is "Visa")
 SELECT *
 FROM customers c, credit_cards cc, transactions t
@@ -56,41 +60,120 @@ AND cc.type = 'visa';
 -- social security number, the credit card type and the number of 
 -- credit cards of the given type owned. Print zero if a customer does
 -- not own a credit card of the given type.
-
-SELECT table2.ssn, table2.type, 
-(CASE WHEN table1.count_type IS NULL
+SELECT table1.ssn, table1.type, 
+(CASE WHEN table2.count_type IS NULL
 THEN 0 ELSE count_type END)
 FROM
+
+(SELECT c.ssn, cc2.type
+FROM customers c, 
+(SELECT DISTINCT(cc1.type) 
+FROM credit_cards cc1) AS cc2 
+ORDER BY c.ssn) AS table1
+
+LEFT OUTER JOIN
 
 (SELECT c.ssn, cc.type, 
 COUNT(cc.type) AS count_type
 FROM customers c, credit_cards cc
 WHERE cc.ssn = c.ssn
 GROUP BY c.ssn, cc.type
-ORDER BY c.ssn) AS table1
-
-RIGHT OUTER JOIN
-
-(SELECT c.ssn, cc2.type
-FROM customers c, 
-(SELECT DISTINCT(cc1.type) 
-FROM credit_cards cc1) AS cc2 
 ORDER BY c.ssn) AS table2
 
 ON table1.ssn = table2.ssn
 AND table1.type = table2.type
-ORDER BY table2.ssn, table2.type;
+ORDER BY table1.ssn, table1.type;
 
 -- Q11 Find the code and name of different merchants who did
 -- not entertain transactions for every type of credit card.
 -- Do not use aggregate functions.
-SELECT *
-FROM merchants m, credit_cards cc, transactions t
-WHERE t.number = cc.number
-AND t.code = m.code
-ORDER BY m.code;
 
+SELECT *
+FROM
+
+(SELECT DISTINCT m2.code, m2.name, cc2.type
+FROM credit_cards cc2, merchants m2
+ORDER BY m2.code, cc2.type) AS table1
+
+LEFT OUTER JOIN
+
+(SELECT DISTINCT m2.code, m2.name, cc2.type
+FROM credit_cards cc2, merchants m2, transactions t
+WHERE t.number = cc2.number
+AND t.code = m2.code
+ORDER BY m2.code, cc2.type) AS table2
+
+
+ON table1.code = table2.code;
+
+SELECT *
+FROM credit_cards cc2, merchants m2, transactions t
+WHERE t.number = cc2.number
+AND t.code = m2.code
 
 -- Q12 Find the first and last names of the different customers
 -- from Thailand who do not have a JCB credit card (the credit
 -- card type is "jcb"). Propose five (5) different SQL queries
+
+-- Method 1
+SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+AND c.country = 'Thailand'
+AND cc.type != 'jcb'
+ORDER BY c.first_name, cc.type
+
+-- Method 2
+SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+AND c.country = 'Thailand'
+INTERSECT
+SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+AND cc.type != 'jcb'
+
+-- Method 3
+SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+EXCEPT
+(SELECT DISTINCT c.first_name, c.last_name, c.country, cc.type
+FROM customers c, credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+AND cc.ssn = c.ssn
+AND (c.country != 'Thailand'
+OR cc.type = 'jcb'))
+
+-- Method 4
+SELECT DISTINCT c.first_name, c.last_name
+FROM customers c
+WHERE EXISTS (
+    SELECT cc.type card_type 
+    FROM credit_cards cc
+    WHERE c.ssn = cc.ssn
+    AND c.country = 'Thailand'
+    AND cc.type != 'jcb'
+)
+ORDER BY c.first_name
+
+-- Method 5
+SELECT DISTINCT c.first_name, c.last_name, c.country
+FROM customers c
+WHERE c.ssn = ANY (
+    SELECT cc.ssn
+    FROM credit_cards cc
+    WHERE c.ssn = cc.ssn
+    AND c.country = 'Thailand'
+    AND cc.type != 'jcb'
+)
