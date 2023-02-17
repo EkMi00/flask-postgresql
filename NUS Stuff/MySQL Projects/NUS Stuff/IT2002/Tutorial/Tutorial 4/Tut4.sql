@@ -1,2 +1,4 @@
-SELECT borrower, owner
-FROM loan;
+SELECT *
+FROM loan
+NATURAL JOIN student
+NATURAL JOIN book;
