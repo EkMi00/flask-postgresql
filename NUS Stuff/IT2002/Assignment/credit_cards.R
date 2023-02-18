@@ -18,7 +18,11 @@
 # Q11 Find the code and name of different merchants who did
 # not entertain transactions for every type of credit card.
 # Do not use aggregate functions.
+setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
+table1 <- read.csv("not_all_credit_card_1.csv", header =TRUE,sep= ",")
+table2 <- read.csv("not_all_credit_card_2.csv", header =TRUE,sep= ",")
 
+print(identical(table1, table2))
 
 # Q12 Find the first and last names of the different customers
 # from Thailand who do not have a JCB credit card (the credit

@@ -48,7 +48,7 @@ ORDER BY c.first_name;
 -- Q9 Find the social security number of the different customers who 
 -- purchased something on Christmas day 2017 with their Visa credit
 -- card (the credit card type is "Visa")
-SELECT c.ssn, t.datetime, cc.type
+SELECT DISTINCT c.ssn
 FROM customers c, credit_cards cc, transactions t
 WHERE cc.ssn = c.ssn
 AND t.number = cc.number
@@ -87,29 +87,37 @@ ORDER BY table1.ssn, table1.type;
 -- Q11 Find the code and name of different merchants who did
 -- not entertain transactions for every type of credit card.
 -- Do not use aggregate functions.
-
-SELECT *
+SELECT DISTINCT table1.code, table1.name
 FROM
 
-(SELECT DISTINCT m2.code, m2.name, cc2.type
-FROM credit_cards cc2, merchants m2
-ORDER BY m2.code, cc2.type) AS table1
+(SELECT DISTINCT m.code, m.name, cc.type
+FROM credit_cards cc, merchants m
+ORDER BY m.code, cc.type) AS table1
 
 LEFT OUTER JOIN
 
-(SELECT DISTINCT m2.code, m2.name, cc2.type
-FROM credit_cards cc2, merchants m2, transactions t
-WHERE t.number = cc2.number
-AND t.code = m2.code
-ORDER BY m2.code, cc2.type) AS table2
+(SELECT DISTINCT m.code, cc.type
+FROM credit_cards cc, merchants m, transactions t
+WHERE t.number = cc.number
+AND t.code = m.code
+ORDER BY m.code, cc.type) AS table2
 
 
-ON table1.code = table2.code;
+ON table1.code = table2.code
+AND table1.type = table2.type
+WHERE table2.type IS NULL
+ORDER BY table1.code;
 
-SELECT *
-FROM credit_cards cc2, merchants m2, transactions t
-WHERE t.number = cc2.number
-AND t.code = m2.code
+
+
+-- SELECT m.code, m.name
+-- FROM merchants m, credit_cards cc, transactions t
+-- WHERE t.number = cc.number
+-- AND t.code = m.code
+-- GROUP BY m.code
+-- HAVING COUNT(DISTINCT cc.type) < 16
+-- ORDER by m.code;
+
 
 -- Q12 Find the first and last names of the different customers
 -- from Thailand who do not have a JCB credit card (the credit
