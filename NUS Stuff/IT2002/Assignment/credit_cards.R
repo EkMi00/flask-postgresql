@@ -19,10 +19,17 @@
 # not entertain transactions for every type of credit card.
 # Do not use aggregate functions.
 setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
-table1 <- read.csv("not_all_credit_card_1.csv", header =TRUE,sep= ",")
-table2 <- read.csv("not_all_credit_card_2.csv", header =TRUE,sep= ",")
+table1 <- read.csv("Thailand_not_JCB.csv", header =TRUE,sep= ",")
+table2 <- read.csv("Thailand_not_JCB2.csv", header =TRUE,sep= ",")
+table3 <- read.csv("Thailand_not_JCB3.csv", header =TRUE,sep= ",")
+table4 <- read.csv("Thailand_not_JCB4.csv", header =TRUE,sep= ",")
+table5 <- read.csv("Thailand_not_JCB5.csv", header =TRUE,sep= ",")
 
 print(identical(table1, table2))
+print(identical(table1, table3))
+print(identical(table1, table4))
+print(identical(table1, table5))
+
 
 # Q12 Find the first and last names of the different customers
 # from Thailand who do not have a JCB credit card (the credit
