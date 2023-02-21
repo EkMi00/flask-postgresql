@@ -115,16 +115,23 @@ SELECT COUNT(*)
 FROM customers c2
 GROUP BY c2.country);
 
+-- Customers who have downloaded every version of Aerified
 SELECT c.first_name, c.last_name
 FROM customers c
-WHERE NOT EXISTS( 
+WHERE NOT EXISTS ( 
 SELECT *   
 FROM games g  
-WHERE g.name ='Aerified'  
+WHERE g.name = 'Aerified'  
 AND NOT EXISTS (      
 SELECT *      
 FROM downloads d     
 WHERE d.customerid = c.customerid     
 AND d.name = g.name      
-AND d.version = g.version));
+AND d.version = g.version)); -- Subquery finds customers who did not download any version of Aerified
 
+
+SELECT c.first_name, c.last_name, g.name, g.version
+FROM customers c, games g, downloads d
+WHERE c.customerid = d.customerid
+AND d.name = g.name
+AND d.version = g.version

@@ -1,5 +1,6 @@
 # Q7 Find the last and first names of the different 
-# Singaporean customers. Print the result in alphabetical order of the last and first names.
+# Singaporean customers. Print the result in alphabetical
+# order of the last and first names.
 
 # Q8 For each Singaporean customer, find his or her 
 # first and last name and total expenditure. Implicitly 
@@ -19,17 +20,26 @@
 # not entertain transactions for every type of credit card.
 # Do not use aggregate functions.
 setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
-table1 <- read.csv("Thailand_not_JCB.csv", header =TRUE,sep= ",")
+table1 <- read.csv("Thailand_not_JCB1.csv", header =TRUE,sep= ",")
 table2 <- read.csv("Thailand_not_JCB2.csv", header =TRUE,sep= ",")
 table3 <- read.csv("Thailand_not_JCB3.csv", header =TRUE,sep= ",")
 table4 <- read.csv("Thailand_not_JCB4.csv", header =TRUE,sep= ",")
 table5 <- read.csv("Thailand_not_JCB5.csv", header =TRUE,sep= ",")
 
-print(identical(table1, table2))
-print(identical(table1, table3))
-print(identical(table1, table4))
-print(identical(table1, table5))
+q11_1 <- read.csv("Q11-nested.csv", header=TRUE, sep = ",")
+q11_2 <- read.csv("Q11-joined.csv", header=TRUE, sep = ",")
+q11_3 <- read.csv("Q11-count.csv", header=TRUE, sep = ",")
 
+# print(str(q11_3))
+
+# print(identical(table1, table2))
+# print(identical(table1, table3))
+# print(identical(table1, table4))
+# print(identical(table1, table5))
+
+print(identical(q11_1, q11_2))
+print(identical(q11_1, q11_3))
+print(identical(q11_2, q11_3))
 
 # Q12 Find the first and last names of the different customers
 # from Thailand who do not have a JCB credit card (the credit

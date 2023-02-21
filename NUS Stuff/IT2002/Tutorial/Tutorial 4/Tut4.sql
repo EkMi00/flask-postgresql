@@ -84,4 +84,4 @@ WHERE NOT EXISTS (
         SELECT *
         FROM loan l
         WHERE l.book = b.ISBN13
-        AND l.borrower = s.email) );
+        AND l.borrower = s.email));

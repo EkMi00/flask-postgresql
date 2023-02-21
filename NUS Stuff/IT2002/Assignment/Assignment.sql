@@ -8,7 +8,7 @@ m.country merchant_country,
 t.identifier transaction_ID, t.datetime transaction_datetime,
 t.amount transaction_amount
 
-FROM customers c, credit_cards cc, merchants m, transactions t
+FROM customerz c, credit_cards cc, merchants m, transactions t
 WHERE t.number = cc.number
 AND t.code = m.code
 AND cc.ssn = c.ssn
@@ -36,27 +36,27 @@ UPDATE transactions SET identifier = 2 WHERE identifier = 1;
 -- ERROR: duplicate key value violates unique constraint "transactions_pkey"
 
 -- Q7 Find the last and first names of the different 
--- Singaporean customers. Print the result in alphabetical order
+-- Singaporean customerz. Print the result in alphabetical order
 -- of the last and first names.
 SELECT last_name, first_name
-FROM customers c
+FROM customerz c
 ORDER BY last_name, first_name;
 
 -- Q8 For each Singaporean customer, find his or her 
 -- first and last name and total expenditure. Implicitly 
--- ignore customers who did not use their credit cards or 
+-- ignore customerz who did not use their credit cards or 
 -- do not have a credit card.
 SELECT c.first_name, c.last_name, SUM(t.amount)
-FROM customers c, transactions t, credit_cards cc
+FROM customerz c, transactions t, credit_cards cc
 WHERE cc.ssn = c.ssn
 AND t.number = cc.number
 GROUP BY c.ssn;
 
--- Q9 Find the social security number of the different customers 
+-- Q9 Find the social security number of the different customerz 
 -- who purchased something on Christmas day 2017 with their Visa
 -- credit card (the credit card type is "visa")
 SELECT DISTINCT c.ssn
-FROM customers c, credit_cards cc, transactions t
+FROM customerz c, credit_cards cc, transactions t
 WHERE cc.ssn = c.ssn
 AND t.number = cc.number
 AND t.datetime::DATE = DATE '2017-12-25'
@@ -73,7 +73,7 @@ THEN 0 ELSE count_type END)
 FROM
 
 (SELECT c.ssn, cc2.type
-FROM customers c, 
+FROM customerz c, 
 (SELECT DISTINCT(cc1.type) 
 FROM credit_cards cc1) AS cc2 
 ORDER BY c.ssn) AS table1
@@ -82,7 +82,7 @@ LEFT OUTER JOIN
 
 (SELECT c.ssn, cc.type, 
 COUNT(cc.type) AS count_type
-FROM customers c, credit_cards cc
+FROM customerz c, credit_cards cc
 WHERE cc.ssn = c.ssn
 GROUP BY c.ssn, cc.type
 ORDER BY c.ssn) AS table2
@@ -94,6 +94,24 @@ ORDER BY table1.ssn, table1.type;
 -- Q11 Find the code and name of different merchants who did
 -- not entertain transactions for every type of credit card.
 -- Do not use aggregate functions.
+
+-- Nested Method (Late)
+SELECT DISTINCT m.code, m.name
+FROM merchants m, credit_cards cc1 
+WHERE NOT EXISTS (
+    SELECT *
+    FROM credit_cards cc2
+    WHERE cc1.type = cc2.type
+    AND EXISTS (
+        SELECT *
+        FROM transactions t
+        WHERE t.number = cc2.number
+        AND t.code = m.code) )
+ORDER BY m.code, m.name;
+-- Subquery selects those merchants who did entertain 
+-- transactions for any type of credit card 
+    
+-- Outer Join Method (Submitted)
 SELECT DISTINCT table1.code, table1.name
 FROM
 
@@ -115,67 +133,69 @@ WHERE table2.type IS NULL
 ORDER BY table1.code;
 
 
+-- Aggregate Method (For Checking)
 SELECT m.code, m.name
 FROM merchants m, credit_cards cc, transactions t
 WHERE t.number = cc.number
 AND t.code = m.code
 GROUP BY m.code
 HAVING COUNT(DISTINCT cc.type) < 16
-ORDER by m.code;
+ORDER by m.code, m.name;
+
 
 -- -- Customer without credit card: John Doe
 -- SELECT c.ssn
--- FROM customers c
+-- FROM customerz c
 -- EXCEPT
 -- SELECT c.ssn
--- FROM customers c, credit_cards cc
+-- FROM customerz c, credit_cards cc
 -- WHERE c.ssn = cc.ssn
 
 
--- Q12 Find the first and last names of the different customers
+-- Q12 Find the first and last names of the different customerz
 -- from Thailand who do not have a JCB credit card (the credit
 -- card type is "jcb"). Propose five (5) different SQL queries
 
 -- Method 1
 (SELECT DISTINCT c.first_name, c.last_name
-FROM customers c, credit_cards cc, transactions t
+FROM customerz c, credit_cards cc, transactions t
 WHERE t.number = cc.number
 AND cc.ssn = c.ssn
 AND c.country = 'Thailand'
 AND cc.type != 'jcb')
 UNION
 (SELECT c1.first_name, c1.last_name
-FROM customers c1 
+FROM customerz c1 
 WHERE c1.country = 'Thailand'
 EXCEPT
 SELECT c2.first_name, c2.last_name
-FROM customers c2, credit_cards cc2
+FROM customerz c2, credit_cards cc2
 WHERE c2.ssn = cc2.ssn);
 
 -- Method 2
 ((SELECT DISTINCT c.first_name, c.last_name
-FROM customers c, credit_cards cc, transactions t
+FROM customerz c, credit_cards cc, transactions t
 WHERE t.number = cc.number
 AND cc.ssn = c.ssn
 AND c.country = 'Thailand')
 INTERSECT
 (SELECT DISTINCT c.first_name, c.last_name
-FROM customers c, credit_cards cc, transactions t
+FROM customerz c, credit_cards cc, transactions t
 WHERE t.number = cc.number
 AND cc.ssn = c.ssn
 AND cc.type != 'jcb'))
 UNION
 (SELECT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.country = 'Thailand'
 EXCEPT
 SELECT c.first_name, c.last_name
-FROM customers c, credit_cards cc
+FROM customerz c, credit_cards cc
 WHERE c.ssn = cc.ssn );
 
 -- Method 3
 (SELECT DISTINCT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.ssn IN (
     SELECT cc.ssn
     FROM credit_cards cc
@@ -185,16 +205,16 @@ WHERE c.ssn IN (
 ))
 UNION
 (SELECT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.country = 'Thailand'
 EXCEPT
 SELECT c.first_name, c.last_name
-FROM customers c, credit_cards cc
+FROM customerz c, credit_cards cc
 WHERE c.ssn = cc.ssn );
 
 -- Method 4
 (SELECT DISTINCT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE EXISTS (
     SELECT cc.type
     FROM credit_cards cc
@@ -204,16 +224,16 @@ WHERE EXISTS (
 ))
 UNION
 (SELECT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.country = 'Thailand'
 EXCEPT
 SELECT c.first_name, c.last_name
-FROM customers c, credit_cards cc
+FROM customerz c, credit_cards cc
 WHERE c.ssn = cc.ssn );
 
 -- Method 5
 (SELECT DISTINCT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.ssn = ANY (
     SELECT cc.ssn
     FROM credit_cards cc
@@ -223,9 +243,9 @@ WHERE c.ssn = ANY (
 ))
 UNION
 (SELECT c.first_name, c.last_name
-FROM customers c
+FROM customerz c
 WHERE c.country = 'Thailand'
 EXCEPT
 SELECT c.first_name, c.last_name
-FROM customers c, credit_cards cc
+FROM customerz c, credit_cards cc
 WHERE c.ssn = cc.ssn );
