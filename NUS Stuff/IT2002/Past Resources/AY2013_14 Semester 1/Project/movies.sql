@@ -1,0 +1,80 @@
+CREATE TABLE cinema(
+	cinemaID CHAR(4),
+	cinemaName VARCHAR(64) NOT NULL UNIQUE,
+	address VARCHAR(256) NOT NULL,
+	telNo INT,
+	manager VARCHAR(256) NOT NULL,
+	PRIMARY KEY(cinemaID),
+);
+
+CREATE TABLE hall(
+	hallID CHAR(4),
+	cinemaID CHAR(4),
+	capacity INT CHECK(capacity > 0),
+	PRIMARY KEY(hallID),
+	FOREIGN KEY(cinemaID) REFERENCES cinema ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE movie(
+	movieID CHAR(10),
+	movieName VARCHAR(256) NOT NULL,
+	year DATE NOT NULL,
+	genre CHAR(32),
+	studio VARCHAR(256) NOT NULL,
+	director VARCHAR(256),
+	rating NUMERIC(2,1) NOT NULL CHECK(rating >= 0 AND rating <= 5),
+	PRIMARY KEY(movieID)
+);
+
+CREATE TABLE show(
+	showID CHAR(10),
+	movieID CHAR(10),
+	hallID CHAR(4)
+	duration INT,
+	startTime DATE NOT NULL,
+	endTime DATE NOT NULL,
+	CHECK ((DATEDIFF(minute, startTime, endTime)) = duration)
+	PRIMARY KEY(showID),
+	FOREIGN KEY(hallID) REFERENCES hall ON UPDATE CASCADE ON DELETE CASCADE
+	FOREIGN KEY(movieID) REFERENCES movie ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE customer(
+	customerID CHAR(10),
+	customerName VARCHAR(256) NOT NULL,
+	phone INT NOT NULL
+	PRIMARY KEY(customerID)
+);
+
+CREATE TABLE staff(
+	staffID CHAR(10),
+	staffName VARCHAR(256) NOT NULL,
+	username VARCHAR(32) NOT NULL UNIQUE,
+	password VARCHAR(64) NOT NULL,
+	PRIMARY KEY(staffID)
+);
+
+CREATE TABLE ticket(
+	ticketID CHAR(10),
+	customerID CHAR(10),
+	showID CHAR(10),
+	movieID CHAR(10),
+	seatNo CHAR(3) NOT NULL,
+	price INT NOT NULL,
+	paid BOOLEAN NOT NULL DEFAULT 'FALSE',
+	bookDateTime DATE NOT NULL,
+	paidDateTime DATE,
+	PRIMARY KEY(ticketID),
+	FOREIGN KEY(customerID) REFERENCES customer ON UPDATE CASCADE ON DELETE CASCADE,	
+	FOREIGN KEY(showID, movieID) REFERENCES show(showID, movieID) ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE seat(
+	seatNo CHAR(3),
+	showID CHAR(10),
+	hallID CHAR(4),
+	available BOOLEAN NOT NULL DEFAULT 'TRUE',
+	PRIMARY KEY(seatNo, showID)
+	FOREIGN KEY REFERENCES hall(hallID) ON UPDATE CASACADE ON DELETE CASCADE,
+	FOREIGN KEY(showID) REFERENCES show(showID) ON UPDATE CASACADE ON DELETE CASCADE
+);

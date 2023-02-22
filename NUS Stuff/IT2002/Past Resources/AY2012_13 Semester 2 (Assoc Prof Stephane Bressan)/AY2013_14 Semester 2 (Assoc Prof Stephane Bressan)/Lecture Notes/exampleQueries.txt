@@ -1,0 +1,59 @@
+.read small_data.sql
+
+.header ON
+
+.mode column
+
+SELECT b.title FROM book b;
+
+INSERT INTO book(title,format,pages,language,authors,publisher,year,isbn10,isbn13) VALUES('Where Good Ideas Come From: The Natural History of Innovation','hardcover',336,'English','Steven Johnson','Riverhead Hardcover','2010-01-01','1594487715','978-1594487712');
+
+INSERT INTO book(title,format,pages,language,authors,publisher,year,isbn10,isbn13) VALUES('Where Good Ideas Come From: The Natural History of Innovation','hardcover',336,'English','Steven Johnson','Riverhead Hardcover','2010-01-01','1594487715','978-159448771Y');
+
+INSERT INTO book(title,format,pages,language,authors,publisher,year,isbn10,isbn13) VALUES('Where Good Ideas Come From: The Natural History of Innovation','hardcover',336,'English','Steven Johnson','Riverhead Hardcover','2010-01-01','159448771X','978-159448771X');
+
+SELECT COUNT(*) FROM book b;
+
+SELECT COUNT(DISTINCT *) FROM book b;
+
+SELECT COUNT(b.title) FROM book b;
+
+SELECT COUNT(DISTINCT b.title) FROM book b;
+
+INSERT INTO book(title,format,pages,language,authors,publisher,year,isbn10,isbn13) VALUES('La cuisine au beurre','hardcover',1000,'French','Marie-France Caron','Art et Cuisine','1999-01-01','1594423456','978-1594412345');
+
+INSERT INTO book(title,format,pages,language,authors,publisher,year,isbn10,isbn13) VALUES('Le vol et la propriete','hardcover',100,'French','Romain Prudent','PUF','2011-01-01','1594123456','978-1591243657');
+
+SELECT b.title FROM book b where b.language='French';
+
+SELECT COUNT(DISTINCT b.title) FROM book b GROUP BY language;
+
+SELECT b.language, COUNT(DISTINCT b.title) FROM book b GROUP BY b.language;
+
+SELECT b.language, b.authors, COUNT(DISTINCT b.title) FROM book b GROUP BY b.language;
+
+SELECT b.language FROM book b GROUP BY b.language HAVING COUNT(b.title) > 3;
+
+
+%%%%%%%%%%%%%%%
+
+
+SELECT s.name FROM student s WHERE s.email IN (SELECT c.owner FROM copy c);
+
+SELECT s.name FROM student s, copy c WHERE s.email = c.owner;
+
+%%%%%%%%%%%%%%%%%%%
+
+SELECT s.name FROM student s WHERE s.email IN (SELECT c.owner FROM copy c) AND s.email NOT IN (SELECT l.borrower FROM loan l);
+
+SELECT s.name FROM student s WHERE s.email IN (SELECT c.owner FROM copy c WHERE NOT EXISTS (SELECT * FROM loan l WHERE l.borrower=s.email));
+
+SELECT s.name FROM student s WHERE s.email IN (SELECT c.owner FROM copy c EXCEPT SELECT l.borrower FROM loan l);
+
+%%%%%%%%%%%%%%%%
+
+SELECT s.name, c.book FROM student s, copy c WHERE s.email = c.owner;
+
+SELECT s.name, c.book FROM student s LEFT OUTER JOIN copy c ON s.email = c.owner;
+
+

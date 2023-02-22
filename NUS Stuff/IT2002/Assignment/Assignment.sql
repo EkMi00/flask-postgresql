@@ -130,7 +130,7 @@ ORDER BY m2.code, cc2.type) AS table2
 ON table1.code = table2.code
 AND table1.type = table2.type
 WHERE table2.type IS NULL
-ORDER BY table1.code;
+ORDER BY table1.code, table1.name;
 
 
 -- Aggregate Method (For Checking)
