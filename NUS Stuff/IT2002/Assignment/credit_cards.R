@@ -19,7 +19,8 @@
 # Q11 Find the code and name of different merchants who did
 # not entertain transactions for every type of credit card.
 # Do not use aggregate functions.
-setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
+# setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
+setwd("C:\\Users\\five8\\Documents\\GitHub\\flask-postgresql-sample-app-azd\\NUS Stuff\\IT2002\\Assignment")
 table1 <- read.csv("Thailand_not_JCB1.csv", header =TRUE,sep= ",")
 table2 <- read.csv("Thailand_not_JCB2.csv", header =TRUE,sep= ",")
 table3 <- read.csv("Thailand_not_JCB3.csv", header =TRUE,sep= ",")
