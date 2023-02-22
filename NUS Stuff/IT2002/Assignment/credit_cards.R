@@ -20,7 +20,7 @@
 # not entertain transactions for every type of credit card.
 # Do not use aggregate functions.
 # setwd("/mnt/c/Users/Keck/Documents/GitHub/Flask-PostgreSQL/NUS Stuff/IT2002/Assignment")
-setwd("C:\\Users\\Keck\\Documents\\GitHub\\Flask-PostgreSQL\\NUS Stuff\\IT2002\\Assignment")
+setwd("C:\\Users\\five8\\Documents\\GitHub\\flask-postgresql-sample-app-azd\\NUS Stuff\\IT2002\\Assignment")
 table1 <- read.csv("Thailand_not_JCB1.csv", header =TRUE,sep= ",")
 table2 <- read.csv("Thailand_not_JCB2.csv", header =TRUE,sep= ",")
 table3 <- read.csv("Thailand_not_JCB3.csv", header =TRUE,sep= ",")
@@ -31,19 +31,16 @@ q11_1 <- read.csv("Q11-nested.csv", header=TRUE, sep = ",")
 q11_2 <- read.csv("Q11-joined.csv", header=TRUE, sep = ",")
 q11_3 <- read.csv("Q11-count.csv", header=TRUE, sep = ",")
 
-# print(q11_1[15,])
+# print(str(q11_3))
 
 # print(identical(table1, table2))
 # print(identical(table1, table3))
 # print(identical(table1, table4))
 # print(identical(table1, table5))
 
-
-# print(q11_1 == q11_3)
-
-# print(identical(q11_1, q11_2))
-# print(identical(q11_1, q11_3))
-# print(identical(q11_2, q11_3))
+print(identical(q11_1, q11_2))
+print(identical(q11_1, q11_3))
+print(identical(q11_2, q11_3))
 
 # Q12 Find the first and last names of the different customers
 # from Thailand who do not have a JCB credit card (the credit
