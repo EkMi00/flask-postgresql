@@ -58,8 +58,8 @@ DROP VIEW IF EXISTS qn2;
 CREATE VIEW qn2 (uname, name) AS
 SELECT uname, name
 FROM Pet
-WHERE atype IN ('A', 'B')
-AND diet IN ('D1');
+WHERE (atype = 'A' OR atype = 'B')
+AND diet = 'D1';
 ------------------------
 
 -- Test Code: MAKE SURE YOU HAVE YOUR ANSWER

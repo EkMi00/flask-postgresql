@@ -109,7 +109,7 @@ WHERE NOT EXISTS (
         AND t.code = m.code) )
 ORDER BY m.code, m.name;
 -- Subquery selects those merchants who did entertain 
--- transactions for any type of credit card 
+-- transactions for (every?) type of credit card 
     
 -- Outer Join Method (Submitted)
 SELECT DISTINCT table1.code, table1.name

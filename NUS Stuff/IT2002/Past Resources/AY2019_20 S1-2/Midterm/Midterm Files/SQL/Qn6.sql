@@ -69,6 +69,7 @@ INSERT INTO Qn6_Test VALUES ('WJ', 4);
 DROP VIEW IF EXISTS qn6;
 CREATE VIEW qn6 (uname, num) AS
 WITH WorkersOffices AS 
+
 (SELECT DISTINCT *
 FROM Workers
 NATURAL JOIN Work)
@@ -77,11 +78,12 @@ WHEN COUNT(*) > 1
 THEN COUNT(*)
 ELSE 0
 END 
+
 FROM Workers W
+
 LEFT JOIN (SELECT DISTINCT W1.uname AS W1uname, W2.uname AS W2uname
-FROM WorkersOffices W1
-JOIN WorkersOffices W2
-ON W1.area = W2.area
+FROM WorkersOffices W1, WorkersOffices W2
+WHERE W1.area = W2.area
 AND W1.uname <> W2.uname) AS WorkerPairs
 ON W.uname = WorkerPairs.W1uname
 GROUP BY W.uname;

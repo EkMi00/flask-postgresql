@@ -70,6 +70,11 @@ FROM Pet P1
 JOIN Pet P2
 ON P1.atype = P2.atype
 AND P1.uname < P2.uname;
+
+SELECT DISTINCT P1.uname, P2.uname
+FROM Pet P1, Pet P2
+WHERE P1.atype = P2.atype
+AND P1.uname < P2.uname;
 ------------------------
 
 -- Test Code: MAKE SURE YOU HAVE YOUR ANSWER

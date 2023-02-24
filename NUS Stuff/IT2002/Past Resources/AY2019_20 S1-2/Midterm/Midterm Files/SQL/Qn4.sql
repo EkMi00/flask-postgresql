@@ -120,10 +120,9 @@ INSERT INTO Qn4_Test VALUES ('CG');
 DROP VIEW IF EXISTS qn4;
 CREATE VIEW qn4 (uname) AS
 SELECT PO.uname
-FROM Bid B
-JOIN PetOwner PO
-ON B.pouname = PO.uname
-WHERE B.is_win
+FROM Bid B, PetOwner PO
+WHERE B.pouname = PO.uname
+AND B.is_win
 AND rating IS NULL;
 ------------------------
 

@@ -120,24 +120,28 @@ INSERT INTO Qn7_Test VALUES ('CG', 'CE');
 INSERT INTO Qn7_Test VALUES ('CH', 'CE');
 
 -- TEST YOUR ANSWER HERE
-DROP VIEW IF EXISTS qn7;
-CREATE VIEW qn7 (pouname, ctuname) AS
-SELECT PO.uname, CT.uname
-FROM PetOwner PO
-JOIN CareTaker CT
-ON EXISTS (
-  SELECT 1
-  FROM (SELECT DISTINCT *
-    FROM Availability A
-    LEFT JOIN Bid B
-    ON A.uname = B.ctuname
-    AND A.s_date = B.s_date
-    AND A.s_time = B.s_time
-    AND A.e_time = B.e_time) AS AvailabilityList
-  WHERE PO.uname = AvailabilityList.pouname
-  AND CT.uname = AvailabilityList.ctuname
-);
+WITH bidders AS
+(SELECT DISTINCT b.pouname, b.ctuname,
+a.s_date, a.s_time, a.e_time
+FROM Bid b, Availability a
+WHERE b.ctuname = a.uname
+ORDER BY b.pouname, b.ctuname)
 
+
+SELECT DISTINCT b.pouname, b.ctuname
+FROM Bid b 
+EXCEPT
+SELECT DISTINCT ber.pouname, ber.ctuname
+FROM bidders ber
+WHERE NOT EXISTS (
+  SELECT *
+  FROM Bid b
+  WHERE b.pouname = ber.pouname
+  AND b.ctuname = ber.ctuname
+  AND b.s_date = ber.s_date
+  AND b.s_time = ber.s_time
+  AND b.e_time = ber.e_time
+)
 ------------------------
 
 -- Test Code: MAKE SURE YOU HAVE YOUR ANSWER

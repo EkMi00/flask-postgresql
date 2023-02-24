@@ -54,12 +54,13 @@ INSERT INTO Qn3_Test VALUES ('CJ');
 -- TEST YOUR ANSWER HERE
 DROP VIEW IF EXISTS qn3;
 CREATE VIEW qn3 (uname) AS
-SELECT uname
-FROM Customers
-WHERE uname NOT IN (
-SELECT uname
-FROM PetOwner
-NATURAL JOIN CareTaker);
+SELECT c.uname
+FROM Customers c
+WHERE c.uname NOT IN (
+SELECT p.uname, ct.uname
+FROM PetOwner p, CareTaker ct
+WHERE p.uname = c.uname
+AND ct.uname = c.uname);
 ------------------------
 
 -- Test Code: MAKE SURE YOU HAVE YOUR ANSWER
