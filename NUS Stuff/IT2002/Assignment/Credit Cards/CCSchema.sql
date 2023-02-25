@@ -4,7 +4,7 @@
 
 ********************/
 
-CREATE TABLE IF NOT EXISTS customerz (
+CREATE TABLE IF NOT EXISTS customers (
 	ssn CHAR(11) PRIMARY KEY,
 	first_name VARCHAR(32) NOT NULL ,
 	last_name VARCHAR(32) NOT NULL ,
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS customerz (
 );
 
 CREATE TABLE IF NOT EXISTS credit_cards (
-	ssn CHAR(11) NOT NULL REFERENCES customerz(ssn), 
+	ssn CHAR(11) NOT NULL REFERENCES customers(ssn), 
 	number VARCHAR(20) PRIMARY KEY, 
 	type VARCHAR(32) NOT NULL
 );

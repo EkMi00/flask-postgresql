@@ -96,6 +96,14 @@ FROM downloads d);
 
 SELECT c.customerid
 FROM  customers c
+WHERE c.customerid != ALL (
+SELECT d.customerid
+FROM downloads d)
+
+EXCEPT
+
+SELECT c.customerid
+FROM  customers c
 WHERE c.customerid <> ALL (
 SELECT d.customerid
 FROM downloads d);
@@ -113,21 +121,37 @@ GROUP BY c1.country
 HAVING COUNT(*) >= ALL (
 SELECT COUNT(*)
 FROM customers c2
-GROUP BY c2.country);
+GROUP BY c2.country)
+
 
 -- Customers who have downloaded every version of Aerified
 SELECT c.first_name, c.last_name
 FROM customers c
 WHERE NOT EXISTS ( 
-SELECT *   
-FROM games g  
-WHERE g.name = 'Aerified'  
-AND NOT EXISTS (      
-SELECT *      
-FROM downloads d     
-WHERE d.customerid = c.customerid     
-AND d.name = g.name      
-AND d.version = g.version)); -- Subquery finds customers who did not download any version of Aerified
+    SELECT *   
+    FROM games g  
+    WHERE g.name = 'Aerified'  
+    AND NOT EXISTS (      
+        SELECT *      
+        FROM downloads d     
+        WHERE d.customerid = c.customerid     
+        AND d.name = g.name      
+        AND d.version = g.version) ); -- Subquery finds customers who did not download any version of Aerified
+
+-- Customers who have downloaded every version of every game
+SELECT DISTINCT c.first_name, c.last_name, g1.*
+FROM customers c, games g1
+WHERE NOT EXISTS ( 
+    SELECT *
+    FROM games g2   
+    WHERE g1.name = g2.name
+    AND NOT EXISTS (      
+        SELECT *      
+        FROM downloads d     
+        WHERE d.customerid = c.customerid     
+        AND d.name = g2.name      
+        AND d.version = g2.version) )
+ORDER BY c.first_name, c.last_name;
 
 
 SELECT c.first_name, c.last_name, g.name, g.version

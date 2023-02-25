@@ -57,17 +57,29 @@ FROM customers c LEFT OUTER JOIN downloads d
 ON c.customerid = d.customerid
 WHERE d.customerid ISNULL;
 
-SELECT c.email, c.country
+SELECT c.email, c.country, d.*
 FROM customers c LEFT OUTER JOIN downloads d 
 ON c.customerid = d.customerid 
 WHERE d.customerid ISNULL
-AND c.country = 'Singapore';
+AND c.country = 'Singapore'
+ORDER BY c.email;
 
-SELECT c.email, c.country
+SELECT c.email, c.country, d.*
+FROM customers c LEFT OUTER JOIN downloads d 
+ON c.customerid = d.customerid 
+WHERE d.customerid ISNULL
+AND c.country = 'Singapore'
+
+UNION
+
+(SELECT DISTINCT c.email, c.country, d.*
 FROM customers c LEFT OUTER JOIN downloads d 
 ON c.customerid = d.customerid 
 AND c.country = 'Singapore'
-WHERE d.customerid ISNULL;
+WHERE d.customerid ISNULL
+AND c.country = 'Singapore'
+ORDER BY c.email)
+ORDER BY email;
 
 SELECT d.customerid
 FROM downloads d

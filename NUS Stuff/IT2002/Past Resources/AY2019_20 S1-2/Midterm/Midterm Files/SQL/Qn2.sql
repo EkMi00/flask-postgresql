@@ -62,6 +62,13 @@ WHERE (atype = 'A' OR atype = 'B')
 AND diet = 'D1';
 ------------------------
 
+DROP TABLE IF EXISTS qn2_test;
+DROP TABLE IF EXISTS qn3_test;
+DROP TABLE IF EXISTS qn4_test;
+DROP TABLE IF EXISTS qn5_test;
+DROP TABLE IF EXISTS qn6_test;
+DROP TABLE IF EXISTS qn7_test;
+
 -- Test Code: MAKE SURE YOU HAVE YOUR ANSWER
 SELECT * FROM qn2
 ORDER BY uname;      -- your answer

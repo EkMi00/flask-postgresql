@@ -45,17 +45,19 @@ SELECT DISTINCT name, version
 FROM games
 ORDER BY price;
 
-SELECT first_name, last_name 
+SELECT first_name, last_name, country, dob, since 
 FROM customers 
 WHERE country IN ('Singapore', 'Indonesia') 
-AND (dob BETWEEN '2000-01-01' AND '2000-12-01' OR since >= '2016-12-01')
-AND last_name LIKE 'B%';
+AND (dob BETWEEN '2000-01-01' AND '2000-12-31' 
+OR since >= '2016-12-01')
+AND last_name LIKE 'B____%'; -- At least 5 characters
 
 SELECT DISTINCT price * .07 AS gst
 FROM games 
 ORDER by gst;
 
-SELECT name || ' ' || version  AS game, price * 1.07 
+-- || ' ' || is string concatenation, and character separator
+SELECT name || ' ' || version  AS game, price * 1.07  
 FROM games 
 WHERE price * 0.07 >= 0.3;
 
