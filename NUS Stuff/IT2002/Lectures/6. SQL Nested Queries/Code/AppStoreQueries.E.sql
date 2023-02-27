@@ -139,7 +139,8 @@ WHERE NOT EXISTS (
         AND d.version = g.version) ); -- Subquery finds customers who did not download any version of Aerified
 
 -- Customers who have downloaded every version of every game
-SELECT DISTINCT c.first_name, c.last_name, g1.*
+SELECT DISTINCT c.first_name, c.last_name,
+g1.name, g1.version
 FROM customers c, games g1
 WHERE NOT EXISTS ( 
     SELECT *
@@ -151,7 +152,8 @@ WHERE NOT EXISTS (
         WHERE d.customerid = c.customerid     
         AND d.name = g2.name      
         AND d.version = g2.version) )
-ORDER BY c.first_name, c.last_name;
+ORDER BY c.first_name, c.last_name,
+g1.name, g1.version;
 
 
 SELECT c.first_name, c.last_name, g.name, g.version
