@@ -1,40 +1,28 @@
 DROP TABLE IF EXISTS Bid CASCADE;
 DROP TABLE IF EXISTS Availability CASCADE;
 DROP TABLE IF EXISTS Pet CASCADE;
-DROP TABLE IF EXISTS Trains CASCADE;
-DROP TABLE IF EXISTS Recommends CASCADE;
-DROP TABLE IF EXISTS Work CASCADE;
-DROP TABLE IF EXISTS Located CASCADE;
-DROP TABLE IF EXISTS Offices CASCADE;
 DROP TABLE IF EXISTS PetOwner CASCADE;
 DROP TABLE IF EXISTS CareTaker CASCADE;
-DROP TABLE IF EXISTS Customers CASCADE;
-DROP TABLE IF EXISTS Workers CASCADE;
 DROP TABLE IF EXISTS Users CASCADE;
 
 CREATE TABLE Users (
   uname     varchar(50) PRIMARY KEY,
+  email     varchar(64),
   pass      varchar(256) NOT NULL
 );
 
-CREATE TABLE Customers (
+CREATE TABLE CareTaker (
   uname     varchar(50) PRIMARY KEY REFERENCES Users (uname)
 );
 
-CREATE TABLE CareTaker (
-  uname     varchar(50) PRIMARY KEY REFERENCES Customers (uname),
-  atype     varchar(20) NOT NULL
-);
-
 CREATE TABLE PetOwner (
-  uname     varchar(50) PRIMARY KEY REFERENCES Customers (uname)
+  uname     varchar(50) PRIMARY KEY REFERENCES Users (uname)
 );
 
 CREATE TABLE Pet (
   uname     varchar(50) REFERENCES PetOwner (uname)
                         ON DELETE cascade,
   name      varchar(50),
-  atype     varchar(20) NOT NULL,
   diet      varchar(20) NOT NULL,
   PRIMARY KEY (uname, name)
 );
@@ -57,7 +45,7 @@ CREATE TABLE Bid (
   e_time    time,
   price     numeric NOT NULL,
   rating    integer CHECK ((rating IS NULL) OR (rating >= 0 AND rating <= 5)),
-  is_win    boolean DEFAULT FALSE,
+
   FOREIGN KEY (pouname, name) REFERENCES Pet (uname, name),
   FOREIGN KEY (ctuname, s_date, s_time, e_time) REFERENCES Availability (uname, s_date, s_time, e_time),
   PRIMARY KEY (pouname, name, ctuname, s_date, s_time, e_time),

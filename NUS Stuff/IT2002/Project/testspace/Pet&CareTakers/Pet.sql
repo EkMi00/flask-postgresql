@@ -1,13 +1,42 @@
-SELECT p.*, a.*
-FROM PetOwner po, Pet p,
-CareTaker ct, Availability a, Bid b
-WHERE p.uname = po.uname
-AND a.uname = ct.uname
-AND b.pouname = p.uname
-AND b.name = p.name
-AND b.ctuname = a.uname
-AND b.s_date = a.s_date
-AND b.s_time = a.s_time
-AND b.e_time = a.e_time
+SELECT * 
+FROM Pet;
+
+INSERT INTO Users VALUES(username, email, password);
+SELECT *
+FROM users;
+
+INSERT INTO PetOwner VALUES (username);
+SELECT u.*
+FROM PetOwner po, users u
+WHERE po.uname = u.uname
+
+INSERT INTO Caretaker VALUES (username);
+SELECT u.*
+FROM CareTaker ct, users u
+WHERE ct.uname = u.uname
+
+INSERT INTO Pet VALUES (username, name, diet)
+SELECT * 
+FROM Pet;
+
+SELECT *
+FROM Pet p
+WHERE LOWER(p.uname) = 'cd';
 
 
+
+INSERT INTO Availability (uname, s_date, s_time, e_time)
+SELECT *
+FROM Availability
+WHERE s_date >= DATE '1990-1-1'
+AND s_date <= DATE '1990-1-1'
+AND s_time >= TIME '12:00:00'
+AND e_time <= TIME '15:00:00'
+
+SELECT *
+FROM Availability
+
+
+INSERT INTO Bid (pouname ,name ,ctuname, s_date, s_time, e_time, price, rating, is_win);
+SELECT *
+FROM Bid;
