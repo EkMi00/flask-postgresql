@@ -45,7 +45,6 @@ CREATE TABLE Bid (
   e_time    time,
   price     numeric NOT NULL,
   rating    integer CHECK ((rating IS NULL) OR (rating >= 0 AND rating <= 5)),
-
   FOREIGN KEY (pouname, name) REFERENCES Pet (uname, name),
   FOREIGN KEY (ctuname, s_date, s_time, e_time) REFERENCES Availability (uname, s_date, s_time, e_time),
   PRIMARY KEY (pouname, name, ctuname, s_date, s_time, e_time),
