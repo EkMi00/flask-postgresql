@@ -91,6 +91,17 @@ ON table1.ssn = table2.ssn
 AND table1.type = table2.type
 ORDER BY table1.ssn, table1.type;
 
+
+SELECT c1.ssn, c1.type, COUNT(cc1.number)
+FROM
+(SELECT DISTINCT c2.ssn, cc2.type
+FROM customers c2, credit_cards cc2) AS c1
+LEFT OUTER JOIN credit_cards cc1 
+ON c1.ssn = cc1.ssn 
+AND c1.type = cc1.type
+GROUP BY c1.ssn, c1.type
+ORDER BY c1.ssn, c1.type;
+
 -- Q11 Find the code and name of different merchants who did
 -- not entertain transactions for every type of credit card.
 -- Do not use aggregate functions.
