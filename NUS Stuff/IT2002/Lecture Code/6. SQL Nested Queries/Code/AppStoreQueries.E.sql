@@ -12,12 +12,31 @@ FROM  customers c, downloads d
 WHERE c.country = 'Singapore'
 AND c.customerid = d.customerid;
 
-SELECT d.name
+SELECT DISTINCT d.name
 FROM  downloads d
 WHERE d.customerid IN (
     SELECT c.customerid
     FROM customers c
     WHERE c.country = 'Singapore');
+
+-- EXCEPT
+
+SELECT DISTINCT d.name
+FROM downloads d
+WHERE EXISTS (
+    SELECT *
+    FROM customers c
+    WHERE c.country = 'Singapore'
+    AND c.customerid = d.customerid
+)
+
+-- EXCEPT
+
+SELECT DISTINCT d.name
+FROM customers c, downloads d
+WHERE c.country = 'Singapore'
+AND c.customerid = d.customerid;
+
     
 SELECT d.name
 FROM  customers c, downloads d
@@ -87,12 +106,33 @@ WHERE d.customerid IN (
 SELECT c.customerid
 FROM customers c
 WHERE c.country = 'Singapore');
+
     
 SELECT c.customerid
 FROM  customers c
 WHERE c.customerid NOT IN (
-SELECT d.customerid
-FROM downloads d);
+    SELECT d.customerid
+    FROM downloads d)
+
+UNION
+
+SELECT c.customerid
+FROM customers c
+WHERE NOT EXISTS (
+    SELECT *
+    FROM downloads d
+    WHERE c.customerid = d.customerid)
+
+SELECT c5.customerid
+FROM 
+(SELECT *
+FROM customers c1
+EXCEPT 
+(SELECT c2.* FROM customers c2, 
+(SELECT DISTINCT c3.*
+FROM downloads d NATURAL JOIN customers c3) AS c4
+WHERE c2.customerid = c4.customerid)) AS c5;
+
 
 SELECT c.customerid
 FROM  customers c
@@ -137,6 +177,46 @@ WHERE NOT EXISTS (
         WHERE d.customerid = c.customerid     
         AND d.name = g.name      
         AND d.version = g.version) ); -- Subquery finds customers who did not download any version of Aerified
+
+-- SELECT *
+-- FROM downloads d, games g, customers c
+-- WHERE d.customerid = c.customerid     
+--         AND d.name = g.name      
+--         AND d.version = g.version
+
+-- WITH table1 AS 
+-- (SELECT *
+-- FROM downloads
+-- NATURAL JOIN games
+-- NATURAL JOIN customers),
+
+-- table2 AS
+-- (SELECT *
+-- FROM games g
+-- WHERE g.name = 'Aerified'),
+
+-- table3 AS 
+-- (SELECT *
+-- FROM customers c),
+
+-- cross1 AS 
+-- (SELECT t2.* 
+-- FROM table2 t2, table1 t1
+-- WHERE t2.name = t1.name),
+
+-- exclude1 AS
+-- (SELECT *
+-- FROM table2
+-- EXCEPT 
+-- SELECT *
+-- FROM cross1)
+
+-- -- SELECT *
+-- -- FROM exclude1
+
+-- cross3 AS
+-- (SELECT *
+-- FROM table3 t3, exclude1 e1)
 
 
 
