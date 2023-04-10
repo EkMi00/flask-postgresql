@@ -32,7 +32,7 @@ END) - l.borrowed + 1) AS duration FROM loan l ) AS temp;
 -- Avg : 41.4963826366559486	
 -- Stddev : 38.4206806387009364
 
-SELECT b.title 
+SELECT b.title, b.isbn13 
 FROM book b
 WHERE b.ISBN13 NOT IN (
 SELECT l.book
@@ -85,3 +85,17 @@ WHERE NOT EXISTS (
         FROM loan l
         WHERE l.book = b.ISBN13
         AND l.borrower = s.email));
+
+SELECT b.isbn13
+FROM book b
+WHERE NOT EXISTS (
+    SELECT *
+    FROM student s
+    WHERE s.department = 'CS'
+        AND NOT EXISTS (
+            SELECT *
+            FROM loan l
+            WHERE s.email = l.borrower
+            AND b.isbn13 = l.book
+        )
+);  

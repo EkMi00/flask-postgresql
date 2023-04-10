@@ -24,6 +24,16 @@ FROM loan
 ORDER BY book ASC, duration ASC;
 
 
+
+SELECT b.isbn13
+FROM book b
+EXCEPT 
+SELECT l.book
+FROM loan l;
+
+
+
+
 SELECT borrowed, borrowed - 10 -- In Days
 FROM loan
 

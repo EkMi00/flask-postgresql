@@ -138,6 +138,8 @@ WHERE NOT EXISTS (
         AND d.name = g.name      
         AND d.version = g.version) ); -- Subquery finds customers who did not download any version of Aerified
 
+
+
 -- Customers who have downloaded every version of every game
 SELECT DISTINCT c.first_name, c.last_name,
 g1.name, g1.version
