@@ -91,7 +91,7 @@ ON table1.ssn = table2.ssn
 AND table1.type = table2.type
 ORDER BY table1.ssn, table1.type;
 
-
+-- Shorter
 SELECT c1.ssn, c1.type, COUNT(cc1.number)
 FROM
 (SELECT DISTINCT c2.ssn, cc2.type
