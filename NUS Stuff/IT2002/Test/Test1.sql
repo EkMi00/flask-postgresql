@@ -191,3 +191,41 @@ CREATE TABLE IF NOT EXISTS E1_S (
 
 DROP TABLE IF EXISTS E1_S;
 DROP TABLE IF EXISTS E2;
+
+
+DROP TABLE IF EXISTS E1_S CASCADE;
+-- DROP TABLE IF EXISTS S CASCADE;
+DROP TABLE IF EXISTS E2 CASCADE;
+
+
+CREATE TABLE IF NOT EXISTS E2 (
+    G VARCHAR(10) PRIMARY KEY, 
+    H VARCHAR(10), 
+    J VARCHAR(10),
+    K VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS E1_S (
+    A VARCHAR(10) UNIQUE, 
+    B VARCHAR(10), 
+    C VARCHAR(10),
+    D VARCHAR(10),
+    F VARCHAR(10),
+    G VARCHAR(10),
+    PRIMARY KEY (C, D),
+    FOREIGN KEY (G) REFERENCES E2 (G)
+);
+
+
+SELECT *
+FROM customer c1, customer c2
+WHERE c1.cnumber <> c2.cnumber
+AND EXISTS (
+    SELECT *
+    FROM visited v1, visited v2
+    WHERE c1.cnumber = v1.cnumber
+    AND c2.cnumber = v2.cnumber
+    AND v1.bname = v2.bname 
+    AND v1.bcountry = v2.bname
+    AND v1.vdate = v2.vdate 
+) 
